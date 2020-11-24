@@ -1,0 +1,10 @@
+name: Algorithms
+nodes:
+  - nodeName: Hkube-Agent
+    algorithmName: hkube-agent-service
+    input:
+      - '@flowInput.data'
+options:
+    ttl:                    3600
+    batchTolerance:         100
+    progressVerbosityLevel: info

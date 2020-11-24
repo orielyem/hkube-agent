@@ -1,0 +1,8 @@
+flowInput:
+  data: {
+    rabbitMqSettings:{
+        url:'amqps://dnitdpjo:BDrN4dbOkWF7GGBuuwV0uglHZGhPtYcs@moose.rmq.cloudamqp.com/dnitdpjo',
+        queuesToConsume:["deep_wisdom","queue2","queue2"]
+    },
+    timeoutInMilliseconds:3000
+}

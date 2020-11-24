@@ -1,0 +1,9 @@
+name: hkube-agent-service
+env: nodejs # can be python or javascript
+resources:
+  cpu: 0.5
+  mem: 512Mi
+
+code:
+  path: ../src.zip
+  entryPoint: src/index.js
