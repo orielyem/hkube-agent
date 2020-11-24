@@ -1,19 +1,21 @@
-var amqp = require('amqplib');
-const {AlgorithmStatus} = require('./algorithmStatus');
+let amqp = require('amqp-connection-manager');
+const { AlgorithmStatus } = require('./algorithmStatus');
 
-// delete belong to algo
+// delete - belong to algo
 const axios = require('axios')
 
+//#region Global Params
 let connection;
-let channel;
-var consumersList;
+let channelWrapper;
+let consumersList;
 let config;
+//#endregion
 
+//#region Hkube Methods
 init = async (args) => {
   config = args.input[0]
   try {
     connection = await amqp.connect(config.rabbitMqSettings.url)
-    channel = await connection.createChannel();
   } catch (err) {
     console.log("connection failed")
     throw err
@@ -22,20 +24,35 @@ init = async (args) => {
 }
 
 start = async () => {
-  await config.rabbitMqSettings.queuesToConsume.forEach(async (queue) => {
-    consumersList[queue] = new AlgorithmStatus();
-    await channel.assertQueue(queue, {
-      durable: true
-    });
-    await channel.consume(queue, async (msg) => {
-      await handleConsume(queue, msg.content.toString())
-     await channel.ack(msg);
-    });
+  channelWrapper = connection.createChannel({
+    json: true,
+    setup: async (channel) => {
+
+      await config.rabbitMqSettings.queuesToConsume.forEach(async (queue) => {
+        consumersList[queue] = new AlgorithmStatus();
+        await channel.assertQueue(queue, {
+          durable: true
+        });
+        await channel.consume(queue, async (msg) => {
+          await handleConsume(queue, msg);
+        });
+      });
+      return channel;
+    }
   });
 };
 
+stop = async () => {
+  await channelWrapper.close();
+  await connection.close();
+};
+//#endregion
+
+//#region Service Methods
 async function handleConsume(queue, msg) {
   let response;
+  //let msgContent = msg.content.toString();
+
   // if (!consumersList[queue].isPuased) {
   //   // TODO send to algo with msgConsumed
   //   // response= await axios.post('https://playground.hkube.io/hkube/monitor-server//store/algorithms/apply').data
@@ -53,16 +70,24 @@ async function handleConsume(queue, msg) {
   //     this.consumersList[queue].timeout = setTimeout(pauseAlgo(response.jobId), config.timeoutInMilliseconds)
   //   })();
 
-  // delete belong to algo
-  let params = {a:msgConsumed.requestId,c:msgConsumed.cloudBody}
-  await axios.post(msgConsumed.returnUrl,params)
+  // delete - belong to algo
+  
+  let msgContent = JSON.parse(msg.content);
+  let params = { a: msgContent.requestId, c: msgContent.cloudBody }
+  await axios.post(msgContent.returnUrl, params)
+
+  // reject logic??
+  await channelWrapper.ack(msg);
 }
+
 
 async function pauseAlgo(algoName) {
   this.consumersList[algoName].isPaused = true;
-
   // pause logic
 }
 
-console.log(init({ "input": [require('./config')] }).then(async () => { await start() }))
-module.exports = { init, start }
+//#endregion
+
+// To run localy copy the value of the data object in ../deployment-yamls/input.yaml into "input" 
+//console.log(init({ "input": [{}] }).then(async () => { await start() }))
+module.exports = { init, start, stop }
