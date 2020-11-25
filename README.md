@@ -13,11 +13,10 @@ npm start
 ## Deploy to Hkube
 
 There are several ways as you can see in Hkube [documentation](https://hkube.io/learn/#integrate-algorithms).
+In the following examples we will deploy via the cli.
+Check cli [installation](https://hkube.io/learn/#cli)  
 
-We will deploy via the cli.
-After cli [installation](https://hkube.io/learn/#cli)  
-
-First
+Then, first
 ```bash
 cd <YOUR_PROJECT_LOCATION>/hkube-agent
 ```
@@ -84,3 +83,5 @@ We consume messages from multiple rabbitmq queues and pass it to the requested a
 
 ## Notes
 * When deploying to hkube make sure that your naming (algorithm, pipeline) are the same in all of the yaml files. 
+* Hkube-agent uses other algorithmsso you need to make sure that they are exists on hkube. In case that they are not you can add them using the deploy algorithm steps above.
+* If you want to debug your algorithm on your computer while it's runing on Hkube cloud you take a look at local-debug folder.
