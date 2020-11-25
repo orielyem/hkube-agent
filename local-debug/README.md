@@ -37,7 +37,8 @@ npm config set msvs_version 2017 --global
 > MAKE SURE WHEN YOU ARE INSTALING TO INCLUDE THE NEEDED BUILDING TOOL
 
 ## usage
- 1) Add debug entity on Hkube playground
- 2) Copy the ws link to your code
- 3) Require the desierd algorithm
- 4) Start debuging
+ 1) Add debug entity on Hkube playground.
+ 2) Copy the ws link to your code.
+ 3) Require the desired algorithm in main.js .
+ 4) Start debuging ("main" script command as debug).
+ 5) On Hkube playground go to algorithms, search the debug name that you added and run it with the desired input.
