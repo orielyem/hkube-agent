@@ -9,6 +9,7 @@ let connection;
 let channelWrapper;
 let consumersList;
 let config;
+let hkubeApi;
 //#endregion
 
 //#region Hkube Methods
@@ -23,11 +24,11 @@ init = async (args) => {
   consumersList = []
 }
 
-start = async () => {
+start = async (args,api) => {
+  hkubeApi = api;
   channelWrapper = connection.createChannel({
     json: true,
     setup: async (channel) => {
-
       await config.rabbitMqSettings.queuesToConsume.forEach(async (queue) => {
         consumersList[queue] = new AlgorithmStatus();
         await channel.assertQueue(queue, {
@@ -50,8 +51,19 @@ stop = async () => {
 
 //#region Service Methods
 async function handleConsume(queue, msg) {
-  let response;
-  //let msgContent = msg.content.toString();
+  //let msgContent = JSON.parse(msg.content);
+  let response ="did nothing";
+  try{
+     response = await hkubeApi.startAlgorithm(queue,[]);
+  }catch(err){
+    console.log(err)
+  }
+  console.log(response)
+
+
+  let params = { mainServerResponse: response }
+  // to get the info go to https://stub-result.herokuapp.com/ in your browser
+  await axios.post("https://stub-result.herokuapp.com/", params)
 
   // if (!consumersList[queue].isPuased) {
   //   // TODO send to algo with msgConsumed
@@ -71,13 +83,12 @@ async function handleConsume(queue, msg) {
   //   })();
 
   // delete - belong to algo
-  
-  let msgContent = JSON.parse(msg.content);
-  let params = { a: msgContent.requestId, c: msgContent.cloudBody }
-  await axios.post(msgContent.returnUrl, params)
+  // let msgContent = JSON.parse(msg.content);
+  // let params = { a: msgContent.requestId, c: msgContent.cloudBody }
+  // await axios.post(msgContent.returnUrl, params)
 
   // reject logic??
-  await channelWrapper.ack(msg);
+  //await channelWrapper.ack(msg);
 }
 
 
