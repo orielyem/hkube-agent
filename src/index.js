@@ -26,7 +26,7 @@ init = async (args) => {
 
 start = async (args,api) => {
   hkubeApi = api;
-  channelWrapper = connection.createChannel({
+  channelWrapper = await connection.createChannel({
     json: true,
     setup: async (channel) => {
       await config.rabbitMqSettings.queuesToConsume.forEach(async (queue) => {
