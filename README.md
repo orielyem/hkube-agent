@@ -80,7 +80,7 @@ module.exports = { init, start, stop }
 
 ## Hkube-Agent Summary
 We consume messages from multiple rabbitmq queues and pass it to the requested algorithm.
-The number of instances of an algorithm is depend on the prefetch counter. Defualt prefetch counter is 3 but you can changed it in the config input.
+The number of instances of an algorithm is depend on the prefetch counter. Defualt prefetch counter is 1 but you can changed it in the config input (because there is only one message in the queue at any giving time changing the defualt is not very useful for now).
 After consuming and starting an algorithm:
 * V1 - The algorithm send result to the client.
 * V2 - The algorithm return result to the agent and from there we send to the client.
