@@ -7,8 +7,8 @@ let channelWrapper;
 let consumersList;
 let config;
 let hkubeApi;
-let stopper = null;
-let defualtPrefetch = 2;
+let stopper = undefined;
+let defualtPrefetch = 1;
 //#endregion
 
 //#region Hkube Methods
