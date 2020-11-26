@@ -80,6 +80,8 @@ module.exports = { init, start, stop }
 
 ## Hkube-Agent Summary
 We consume messages from multiple rabbitmq queues and pass it to the requested algorithm.
+The number of instances of an algorithm is depend on the prefetch counter. Defualt prefetch counter is 3 but you can changed it in the config input.
+After consuming and starting an algorithm:
 * V1 - The algorithm send result to the client.
 * V2 - The algorithm return result to the agent and from there we send to the client.
 * V3 - The algorithm return result to the agent and from there we publish it to RabbitMq queue.
@@ -89,3 +91,4 @@ We consume messages from multiple rabbitmq queues and pass it to the requested a
 * Hkube-agent uses other algorithms so you need to make sure that they are exists on hkube. In case that they are not you can add them using the deploy algorithm steps above.
 * If you want to debug your algorithm on your computer while it's runing on Hkube cloud you take a look at local-debug folder.
 * In all of the cases the algorithm must return something (even null)!! for the starAlgorithm operation to complete.
+* If an algorithm instance was not used in some time(approximately 10 minutes), Hkube automatically takes it down. Which means that in the next run the algorithm module will need to load again and it will take some time.
