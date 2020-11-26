@@ -41,4 +41,6 @@ npm config set msvs_version 2017 --global
  2) Copy the ws link to your code.
  3) Require the desired algorithm in main.js .
  4) Start debuging ("main" script command as debug).
- 5) On Hkube playground go to algorithms, search the debug name that you added and run it with the desired input.
+ 5) On Hkube playground go to algorithms, search the debug name that you added and run it with the desired input.\
+
+ You can find input example in <PROJECT_FOLDER>/deployment-yamls/input.yaml

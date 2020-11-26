@@ -79,9 +79,13 @@ module.exports = { init, start, stop }
 ```
 
 ## Hkube-Agent Summary
-We consume messages from multiple rabbitmq queues and pass it to the requested algorithm. If we didn't get any message in a fixed time we stoping the algorithm process to save resources. When we receive a message again the start command bring it back to life
+We consume messages from multiple rabbitmq queues and pass it to the requested algorithm.
+* V1 - The algorithm send result to the client.
+* V2 - The algorithm return result to the agent and from there we send to the client.
+* V3 - The algorithm return result to the agent and from there we publish it to RabbitMq queue.
 
 ## Notes
 * When deploying to hkube make sure that your naming (algorithm, pipeline) are the same in all of the yaml files. 
-* Hkube-agent uses other algorithmsso you need to make sure that they are exists on hkube. In case that they are not you can add them using the deploy algorithm steps above.
+* Hkube-agent uses other algorithms so you need to make sure that they are exists on hkube. In case that they are not you can add them using the deploy algorithm steps above.
 * If you want to debug your algorithm on your computer while it's runing on Hkube cloud you take a look at local-debug folder.
+* In all of the cases the algorithm must return something (even null)!! for the starAlgorithm operation to complete.
